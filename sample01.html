@@ -33,7 +33,7 @@
     border-bottom:2px solid transparent;font-family:inherit}
   nav button:hover{color:var(--ink)}
   nav button.on{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
-  main{padding:22px;max-width:1240px;margin:0 auto}
+  main{padding:22px;padding-bottom:70px;max-width:1240px;margin:0 auto}
   .view{display:none} .view.on{display:block}
   h2{margin:0 0 4px;font-size:18px}
   .sub{color:var(--muted);margin:0 0 18px;font-size:13px}
@@ -161,21 +161,45 @@
   .catgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
   .toolcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:9px;transition:.12s}
   .toolcard:hover{border-color:var(--accent)}
-  .toolcard-h{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .toolcard.selected{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+  .toolcard-h{display:flex;gap:6px;flex-wrap:wrap;align-items:center;justify-content:space-between}
   .toolcard-title{font-size:14.5px;font-weight:700}
   .toolcard-desc{font-size:12px;color:var(--muted);min-height:32px}
   .toolcard-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:11.5px}
-  .toolcard-foot{display:flex;justify-content:space-between;align-items:center;margin-top:4px}
-  .installpanel{display:none;margin-top:6px;padding-top:12px;border-top:1px solid var(--line)}
-  .installpanel.on{display:block}
-  .installhdr{font-size:12.5px;font-weight:700;margin-bottom:8px;color:var(--ink)}
-  .installstep{margin-bottom:10px}
-  .installstep>b{display:block;font-size:11.5px;color:var(--muted);margin-bottom:5px;font-weight:600}
+  .toolcard-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:4px}
+  .selectbtn{font-size:11px;border:1px solid var(--line);background:var(--panel2);color:var(--muted);border-radius:20px;padding:4px 11px;cursor:pointer;white-space:nowrap;font-weight:600;font-family:inherit}
+  .selectbtn.on{background:#dbeafe;border-color:var(--accent);color:var(--accent2)}
+
+  /* 개발자 패널: 테스트 실행 + 코드 스니펫 */
+  .devpanel{display:none;margin-top:6px;padding-top:12px;border-top:1px solid var(--line)}
+  .devpanel.on{display:block}
+  .devtabs{display:flex;gap:4px;margin-bottom:10px}
+  .devtab{background:var(--panel2);border:1px solid var(--line);color:var(--muted);font-size:11.5px;padding:5px 12px;border-radius:20px;cursor:pointer;font-family:inherit}
+  .devtab.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+  .devsec{display:none}
+  .devsec.on{display:block}
+  .devsec label{display:block;font-size:11px;color:var(--muted);margin:8px 0 4px}
+  .devsec input{margin-bottom:2px}
+  .codetabs{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap}
+  .codetab{font-size:11px;color:var(--muted);border:1px solid var(--line);background:var(--panel2);padding:3px 10px;border-radius:6px;cursor:pointer}
+  .codetab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
   .codeblock{position:relative}
   .codeblock pre{margin:0;padding-right:56px}
   .copybtn{position:absolute;top:8px;right:8px;background:var(--panel);border:1px solid var(--line);color:var(--muted);font-size:10.5px;padding:3px 8px;border-radius:6px;cursor:pointer}
   .copybtn:hover{color:var(--ink);border-color:var(--accent)}
-  .installnote{font-size:11px;color:var(--dim)}
+  .devnote{font-size:11px;color:var(--dim);margin-top:6px}
+
+  /* 선택 트레이 (여러 tool을 골라 한 번에 연동 코드 받기) */
+  .selecttray{position:fixed;left:0;right:0;bottom:0;background:var(--navy);color:#fff;padding:12px 22px;display:none;align-items:center;gap:16px;box-shadow:0 -4px 20px rgba(0,0,0,.18);z-index:20}
+  .selecttray.on{display:flex}
+  .selecttray b{color:#fff;white-space:nowrap}
+  .selecttray .chips2{display:flex;gap:6px;flex-wrap:wrap;flex:1}
+  .selecttray .btn.ghost{color:#fff;border-color:rgba(255,255,255,.4)}
+  .selecttray .btn.ghost:hover{border-color:#fff}
+  .chip2{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.28);border-radius:20px;padding:3px 10px;font-size:11px;font-family:var(--mono)}
+  .bundlepanel{position:fixed;left:0;right:0;bottom:54px;background:var(--panel);border-top:1px solid var(--line);padding:14px 22px;display:none;max-height:280px;overflow:auto;box-shadow:0 -6px 20px rgba(0,0,0,.1);z-index:19}
+  .bundlepanel.on{display:block}
+  .bundlehdr{font-size:12.5px;font-weight:700;margin-bottom:8px}
 </style>
 </head>
 <body>
@@ -204,7 +228,7 @@
         <h2>🧩 MCP Tool 카탈로그</h2>
         <span class="pill">사내 전용 · Enterprise Registry</span>
       </div>
-      <p class="sub" style="margin-bottom:0">사내 에이전트가 즉시 연동할 수 있는 MCP tool을 기능별로 탐색하고, 카드에서 바로 설치·연동 방법을 확인하세요.</p>
+      <p class="sub" style="margin-bottom:0">에이전트 개발자를 위한 MCP tool 카탈로그 — 기능별로 tool을 찾아 <b style="color:var(--accent2)">테스트 실행</b>해보고, <b style="color:var(--accent2)">FastMCP 클라이언트 코드</b>를 그대로 복사해 붙여넣으세요.</p>
       <div class="catstats">
         <div class="catstat"><b id="cs-total">0</b><span>전체 tool</span></div>
         <div class="catstat"><b id="cs-approved" style="color:var(--ok)">0</b><span>관리자 승인 완료</span></div>
@@ -411,6 +435,9 @@
     </div>
   </section>
 </main>
+
+<div class="bundlepanel" id="bundlepanel"></div>
+<div class="selecttray" id="selecttray"></div>
 
 <script>
 // ================= MCP Tool Helper UI — 실제 API 연결 =================
@@ -678,10 +705,13 @@ function drawCatChips(){
   box.innerHTML=items.map(([k,label])=>`<span class="chip ${catActiveCat===k?'on':''}" data-cat="${k}">${label}</span>`).join('');
   box.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{catActiveCat=c.dataset.cat;renderCatalog();});
 }
+let selectedTools=new Set();
 function toolCard(t){
-  return `<div class="toolcard">
+  const sel=selectedTools.has(t.id);
+  return `<div class="toolcard ${sel?'selected':''}">
     <div class="toolcard-h">
-      ${badge(t.cat)}${stDot(t.uc)}${ucApproved(t.uc)?'<span class="st-dot done" title="관리자 승인됨">✓ 승인</span>':''}
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">${badge(t.cat)}${stDot(t.uc)}${ucApproved(t.uc)?'<span class="st-dot done" title="관리자 승인됨">✓ 승인</span>':''}</div>
+      <a class="expand" onclick="editTool(${t.id})">규격 →</a>
     </div>
     <div class="toolcard-title">${esc(t.name)}</div>
     <div class="toolcard-desc">${esc(t.desc)||'설명 없음'}</div>
@@ -691,10 +721,10 @@ function toolCard(t){
       <span class="mono" style="color:var(--dim)">${esc(t.owner)}</span>
     </div>
     <div class="toolcard-foot">
-      <button class="btn ghost sm" onclick="toggleInstall(${t.id})">🔌 설치 방법</button>
-      <a class="expand" onclick="editTool(${t.id})">규격 보기 →</a>
+      <button class="btn ghost sm" onclick="toggleDev(${t.id})">🧪 테스트 · 코드</button>
+      <button class="selectbtn ${sel?'on':''}" id="selbtn-${t.id}" onclick="toggleSelect(${t.id})">${sel?'✓ 선택됨':'＋ 에이전트에 추가'}</button>
     </div>
-    <div class="installpanel" id="inst-${t.id}"></div>
+    <div class="devpanel" id="dev-${t.id}"></div>
   </div>`;
 }
 function renderCatalog(){
@@ -720,26 +750,132 @@ function renderCatalog(){
   g('cs-total').textContent=_tools.length;
   g('cs-approved').textContent=_tools.filter(t=>ucApproved(t.uc)).length;
 }
-function toggleInstall(id){
-  const panel=g('inst-'+id);
+function mcpOrigin(){ return (location.origin&&location.origin!=='null')?location.origin.replace(/\/$/,''):'https://your-mcp-host'; }
+function defaultBaseUrl(){ return mcpOrigin()+'/mcp'; }
+
+// ---------- 개발자 패널: 선택 / 테스트 실행 / 코드 스니펫 ----------
+let _devLang={};
+function toggleDev(id){
+  const panel=g('dev-'+id);
   if(panel.classList.contains('on')){ panel.classList.remove('on'); panel.innerHTML=''; return; }
   const t=_tools.find(x=>x.id===id); if(!t) return;
-  const exposed=`${t.uc}__${t.name}`;
-  const origin=(location.origin&&location.origin!=='null')?location.origin.replace(/\/$/,''):'https://your-mcp-host';
-  const cfgSnippet=JSON.stringify({mcpServers:{[exposed]:{url:`${origin}/mcp`,transport:'http',tool:exposed}}},null,2);
-  const sample={}; schemaToReqRows(t.input_schema).forEach(f=>{ sample[f[0]]=f[4]!==''?coerce(f[1],f[4]):''; });
-  const curl=`curl -s ${origin}/mcp/tools/call \\\n  -H 'Content-Type: application/json' \\\n  -d '${JSON.stringify({name:exposed,arguments:sample})}'`;
+  const reqRows=schemaToReqRows(t.input_schema);
   panel.innerHTML=`
-    <div class="installhdr">🔌 에이전트에 연동하기</div>
-    <div class="installstep"><b>1. MCP 서버 설정에 등록</b>
-      <div class="codeblock"><pre>${esc(cfgSnippet)}</pre><button class="copybtn" onclick="copyText(this)">복사</button></div>
+    <div class="devtabs">
+      <button class="devtab on" onclick="switchDevTab(${id},'test',this)">🧪 테스트 실행</button>
+      <button class="devtab" onclick="switchDevTab(${id},'code',this)">💻 코드 스니펫</button>
     </div>
-    <div class="installstep"><b>2. Tool 호출 예시 (curl)</b>
-      <div class="codeblock"><pre>${esc(curl)}</pre><button class="copybtn" onclick="copyText(this)">복사</button></div>
+    <div class="devsec on" id="devtest-${id}">
+      <label>호출 대상 Base URL <span style="color:var(--dim);font-weight:400">— 실제 서버로 테스트하려면 직접 수정하세요 (예: 사내 OCR API 주소)</span></label>
+      <input id="baseurl-${id}" value="${esc(defaultBaseUrl())}" placeholder="https://ocr-api.internal.company.com/mcp">
+      ${reqRows.length? reqRows.map(f=>`
+        <label>${esc(f[0])}${f[2]?' <span style="color:var(--req)">*</span>':''} <span style="color:var(--dim);font-weight:400">(${f[1]})</span></label>
+        <input id="arg-${id}-${esc(f[0])}" data-path="${esc(f[0])}" data-type="${f[1]}" value="${esc(f[4])}" placeholder="${esc(f[3])}" oninput="onArgChange(${id})">
+      `).join('') : '<div class="empty" style="padding:10px 0">입력 항목이 없는 tool입니다.</div>'}
+      <div class="btnrow" style="margin-top:10px">
+        <button class="btn ghost sm" onclick="runMock(${id})">▶ Mock 미리보기</button>
+        <button class="btn sm" onclick="runRealCall(${id})">🌐 실서버로 호출 (curl 방식)</button>
+      </div>
+      <div id="testmsg-${id}" style="font-size:12px;margin-top:6px;color:var(--dim)"></div>
+      <div id="testresult-${id}"></div>
     </div>
-    <div class="installnote">노출명 <span class="uc">${esc(exposed)}</span> · 승인 전 tool은 검토 용도로만 사용하고, 운영 연동 전 관리자 승인 상태를 확인하세요.</div>
+    <div class="devsec" id="devcode-${id}">
+      <div class="codetabs">
+        <span class="codetab on" onclick="switchCodeLang(${id},'fastmcp',this)">FastMCP (Python)</span>
+        <span class="codetab" onclick="switchCodeLang(${id},'curl',this)">curl</span>
+        <span class="codetab" onclick="switchCodeLang(${id},'js',this)">Node.js</span>
+        <span class="codetab" onclick="switchCodeLang(${id},'cfg',this)">MCP config</span>
+      </div>
+      <div id="codebody-${id}"></div>
+    </div>
   `;
   panel.classList.add('on');
+}
+function switchDevTab(id,tab,btn){
+  btn.parentElement.querySelectorAll('.devtab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  g('devtest-'+id).classList.toggle('on', tab==='test');
+  g('devcode-'+id).classList.toggle('on', tab==='code');
+  if(tab==='code') renderCodeSnippet(id, _devLang[id]||'fastmcp');
+}
+function switchCodeLang(id,lang,el){
+  el.parentElement.querySelectorAll('.codetab').forEach(x=>x.classList.remove('on'));
+  el.classList.add('on');
+  _devLang[id]=lang;
+  renderCodeSnippet(id,lang);
+}
+function onArgChange(id){
+  const codeSec=g('devcode-'+id);
+  if(codeSec && codeSec.classList.contains('on')) renderCodeSnippet(id, _devLang[id]||'fastmcp');
+}
+function collectArgs(id){
+  const inputs=[...document.querySelectorAll(`[id^="arg-${id}-"]`)];
+  const args={};
+  inputs.forEach(inp=>{ args[inp.dataset.path]=inp.value!==''?coerce(inp.dataset.type, inp.value):''; });
+  return args;
+}
+function currentBaseUrl(id){
+  const el=g('baseurl-'+id);
+  return ((el&&el.value)||defaultBaseUrl()).trim().replace(/\/$/,'');
+}
+function pyLit(v){
+  if(typeof v==='boolean') return v?'True':'False';
+  if(typeof v==='number') return String(v);
+  return `"${String(v).replace(/\\/g,'\\\\').replace(/"/g,'\\"')}"`;
+}
+function pyDict(obj){
+  return `{${Object.entries(obj).map(([k,v])=>`"${k}": ${pyLit(v)}`).join(', ')}}`;
+}
+async function runMock(id){
+  const t=_tools.find(x=>x.id===id); if(!t) return;
+  const msg=g('testmsg-'+id); msg.textContent='Mock 실행 중…'; msg.style.color='var(--dim)';
+  const args=collectArgs(id);
+  try{
+    const out=await api('/tools/preview',{method:'POST',body:JSON.stringify({mock_template:t.mock_template,input_args:args})});
+    g('testresult-'+id).innerHTML=`<div class="previewhdr res" style="margin-top:10px">Mock Response</div><pre>${esc(JSON.stringify(out,null,2))}</pre>`;
+    msg.textContent='✓ Mock 실행 완료 (실제 서버 호출 아님)'; msg.style.color='var(--ok)';
+  }catch(e){
+    g('testresult-'+id).innerHTML='';
+    msg.textContent='오류: '+e.message; msg.style.color='var(--err)';
+  }
+}
+async function runRealCall(id){
+  const t=_tools.find(x=>x.id===id); if(!t) return;
+  const msg=g('testmsg-'+id);
+  const base=currentBaseUrl(id);
+  if(!base){ msg.textContent='⚠ Base URL을 입력하세요'; msg.style.color='var(--err)'; return; }
+  const exposed=`${t.uc}__${t.name}`;
+  const args=collectArgs(id);
+  msg.textContent='실서버 호출 중… ('+base+'/tools/call)'; msg.style.color='var(--dim)';
+  const started=performance.now();
+  try{
+    const r=await fetch(base+'/tools/call',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:exposed,arguments:args})});
+    const ms=Math.round(performance.now()-started);
+    const text=await r.text(); let body; try{body=JSON.parse(text);}catch(e){body=text;}
+    g('testresult-'+id).innerHTML=`<div class="previewhdr ${r.ok?'res':'req'}" style="margin-top:10px">${r.ok?'✓':'✗'} HTTP ${r.status} · ${ms}ms</div><pre>${esc(typeof body==='string'?body:JSON.stringify(body,null,2))}</pre>`;
+    msg.textContent=r.ok?'✓ 실서버 호출 완료':'⚠ 서버가 오류 응답을 반환했습니다'; msg.style.color=r.ok?'var(--ok)':'var(--warn)';
+  }catch(e){
+    g('testresult-'+id).innerHTML='';
+    msg.textContent='⛔ 호출 실패: '+e.message+' — Base URL이 맞는지, 대상 서버가 CORS를 허용하는지 확인하세요.'; msg.style.color='var(--err)';
+  }
+}
+function renderCodeSnippet(id,lang){
+  const t=_tools.find(x=>x.id===id); if(!t) return;
+  const exposed=`${t.uc}__${t.name}`;
+  const args=collectArgs(id);
+  const base=currentBaseUrl(id);
+  let code='';
+  if(lang==='fastmcp'){
+    code=`from fastmcp import Client\nimport asyncio\n\nasync def main():\n    async with Client("${base}") as client:\n        result = await client.call_tool(\n            "${exposed}",\n            ${pyDict(args)},\n        )\n        print(result)\n\nasyncio.run(main())`;
+  } else if(lang==='curl'){
+    code=`curl -s ${base}/tools/call \\\n  -H 'Content-Type: application/json' \\\n  -d '${JSON.stringify({name:exposed,arguments:args})}'`;
+  } else if(lang==='js'){
+    code=`const res = await fetch("${base}/tools/call", {\n  method: "POST",\n  headers: { "Content-Type": "application/json" },\n  body: JSON.stringify({ name: "${exposed}", arguments: ${JSON.stringify(args)} }),\n});\nconst data = await res.json();\nconsole.log(data);`;
+  } else if(lang==='cfg'){
+    code=JSON.stringify({mcpServers:{[exposed]:{url:base,transport:'http',tool:exposed}}},null,2);
+  }
+  g('codebody-'+id).innerHTML=`<div class="codeblock"><pre>${esc(code)}</pre><button class="copybtn" onclick="copyText(this)">복사</button></div>
+    <div class="devnote">노출명 <span class="uc">${esc(exposed)}</span> · 승인 전 tool은 검토 용도로만 사용하고, 운영 연동 전 관리자 승인 상태를 확인하세요.</div>`;
 }
 function copyText(btn){
   const pre=btn.previousElementSibling;
@@ -747,6 +883,51 @@ function copyText(btn){
     const orig=btn.textContent; btn.textContent='복사됨 ✓';
     setTimeout(()=>{btn.textContent=orig;},1500);
   }).catch(()=>{ btn.textContent='복사 실패'; setTimeout(()=>{btn.textContent='복사';},1500); });
+}
+
+// ---------- 선택 트레이 (여러 tool을 골라 한 번에 연동 코드 받기) ----------
+function toggleSelect(id){
+  if(selectedTools.has(id)) selectedTools.delete(id); else selectedTools.add(id);
+  const btn=g('selbtn-'+id);
+  if(btn){
+    const on=selectedTools.has(id);
+    btn.classList.toggle('on',on); btn.textContent=on?'✓ 선택됨':'＋ 에이전트에 추가';
+    const card=btn.closest('.toolcard'); if(card) card.classList.toggle('selected',on);
+  }
+  renderTray();
+}
+function renderTray(){
+  const tray=g('selecttray');
+  if(!selectedTools.size){ tray.classList.remove('on'); tray.innerHTML=''; g('bundlepanel').classList.remove('on'); g('bundlepanel').innerHTML=''; return; }
+  const names=[...selectedTools].map(id=>{const t=_tools.find(x=>x.id===id);return t?`${t.uc}__${t.name}`:'';}).filter(Boolean);
+  tray.innerHTML=`
+    <b>🧰 선택한 Tool ${selectedTools.size}개</b>
+    <div class="chips2">${names.map(n=>`<span class="chip2">${esc(n)}</span>`).join('')}</div>
+    <button class="btn sm" onclick="openBundle()">연동 코드 보기</button>
+    <button class="btn ghost sm" onclick="clearSelection()">선택 해제</button>
+  `;
+  tray.classList.add('on');
+}
+function clearSelection(){
+  selectedTools.clear();
+  document.querySelectorAll('.selectbtn.on').forEach(b=>{b.classList.remove('on');b.textContent='＋ 에이전트에 추가';});
+  document.querySelectorAll('.toolcard.selected').forEach(c=>c.classList.remove('selected'));
+  renderTray();
+}
+function openBundle(){
+  const bp=g('bundlepanel');
+  if(bp.classList.contains('on')){ bp.classList.remove('on'); bp.innerHTML=''; return; }
+  const base=defaultBaseUrl();
+  const servers={};
+  selectedTools.forEach(id=>{
+    const t=_tools.find(x=>x.id===id); if(!t) return;
+    const exposed=`${t.uc}__${t.name}`;
+    servers[exposed]={url:base,transport:'http',tool:exposed};
+  });
+  const snippet=JSON.stringify({mcpServers:servers},null,2);
+  bp.innerHTML=`<div class="bundlehdr">선택한 ${selectedTools.size}개 tool을 에이전트 MCP 설정에 한 번에 등록</div>
+    <div class="codeblock"><pre>${esc(snippet)}</pre><button class="copybtn" onclick="copyText(this)">복사</button></div>`;
+  bp.classList.add('on');
 }
 
 // ---------- Tool 목록 ----------
