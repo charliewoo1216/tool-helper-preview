@@ -76,6 +76,12 @@
   .b-stt{background:rgba(57,197,207,.15);color:var(--stt)}
   .b-db{background:rgba(227,179,65,.15);color:var(--db)}
   .b-etc{background:rgba(139,148,158,.15);color:var(--etc)}
+  .b-time{background:rgba(21,94,224,.12);color:var(--accent2)}
+  .b-id{background:rgba(124,58,237,.12);color:var(--ocr)}
+  .b-text{background:rgba(8,145,178,.12);color:var(--stt)}
+  .b-mail{background:rgba(180,83,9,.12);color:var(--db)}
+  .b-msg{background:rgba(22,163,74,.12);color:var(--ok)}
+  .b-misc{background:rgba(91,107,132,.12);color:var(--muted)}
   .uc{font-family:var(--mono);font-size:11.5px;color:var(--muted);background:var(--panel2);padding:2px 7px;border-radius:5px}
   pre{margin:0;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:12px;
     font-family:var(--mono);font-size:12.5px;overflow:auto;white-space:pre-wrap;word-break:break-word}
@@ -214,6 +220,7 @@
 <nav>
   <button class="on" data-view="catalog">🧩 Tool 카탈로그</button>
   <button data-view="register">➕ Tool 계약 정의</button>
+  <button data-view="utils">🛠 기능용 MCP</button>
   <button data-view="list">📋 Tool 목록</button>
   <button data-view="uc">🗂 UC 현황</button>
   <button data-view="dash">📊 호출 대시보드</button>
@@ -313,6 +320,72 @@
         <span id="modelabel" style="font-size:12px;color:var(--muted)"></span>
         <span id="savemsg" style="font-size:12px"></span>
       </div>
+    </div>
+  </section>
+
+  <!-- ========== 기능용 MCP (UC와 무관한 범용 개발자 유틸리티) ========== -->
+  <section class="view" id="utils">
+    <h2>🛠 기능용 MCP <span style="font-size:13px;color:var(--muted);font-weight:400">— UC와 무관한 범용 개발자 유틸리티</span></h2>
+    <p class="sub">시간 확인·UUID 생성·메일 발송·메신저 알림처럼 특정 업무(UC)에 매이지 않는 tool을 자유롭게 추가하세요. <b style="color:var(--warn)">추가 → 관리자 승인</b> 이후 <span class="mono">Tool 카탈로그</span>에 등재됩니다.</p>
+
+    <div class="card">
+      <div class="row">
+        <div><label>구분</label>
+          <select id="u-cat" onchange="applyUPreset()">
+            <option value="time">🕐 시간/날짜</option>
+            <option value="id">🔑 식별자/난수</option>
+            <option value="text">📝 텍스트 처리</option>
+            <option value="mail">📧 메일 발송</option>
+            <option value="msg">💬 메신저/알림</option>
+            <option value="misc">🧰 기타</option>
+          </select></div>
+        <div><label>Tool 이름</label><input id="u-name" value="get_current_time" oninput="renderUPreview()"></div>
+        <div><label>작성자 이름 <span style="color:var(--dim)">(선택)</span></label><input id="u-empname" placeholder="예: 김우리"></div>
+      </div>
+      <label>설명 <span style="color:var(--dim)">— 에이전트가 tool 선택 근거로 읽음</span></label>
+      <input id="u-desc" value="현재 서버 시각을 반환한다.">
+      <div class="hint">노출명: <span id="u-exposed">util__get_current_time</span> · 저장 시 <b style="color:var(--warn)">승인 대기</b> 상태로 등록되며, 관리자 승인 후 카탈로그에 노출됩니다 (수정 시에도 재승인 필요).</div>
+    </div>
+
+    <div class="card">
+      <h3><span class="tag tag-req">Request</span> agent가 보내는 항목 (input)</h3>
+      <table class="fields"><thead><tr>
+        <th>항목명</th><th class="w-type">타입</th><th class="w-req">필수</th><th>설명</th><th>예시값</th><th class="w-del"></th>
+      </tr></thead><tbody id="ureqbody"></tbody></table>
+      <div class="btnrow"><button class="btn ghost sm" onclick="addUField('req')">＋ 항목 추가</button></div>
+    </div>
+
+    <div class="card">
+      <h3><span class="tag tag-res">Response</span> agent가 받는 항목 (output / mock) <small>· {{input.항목명}} · {{now}} · {{uuid}} · {{trace_id}} 사용 가능</small></h3>
+      <table class="fields"><thead><tr>
+        <th>항목명</th><th class="w-type">타입</th><th>설명</th><th>예시값 (mock)</th><th class="w-del"></th>
+      </tr></thead><tbody id="uresbody"></tbody></table>
+      <div class="btnrow"><button class="btn ghost sm" onclick="addUField('res')">＋ 항목 추가</button></div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-bottom:12px">🔍 미리보기</h3>
+      <div class="split">
+        <div><div class="previewhdr req">Agent → MCP · Request</div><pre id="pv-ureq">…</pre></div>
+        <div><div class="previewhdr res">MCP → Agent · Response (mock)</div><pre id="pv-ures">…</pre></div>
+      </div>
+      <div class="btnrow" style="margin-top:14px">
+        <button class="btn" id="usavebtn" onclick="saveUtil()">저장 · 승인 요청</button>
+        <button class="btn ghost sm" onclick="newUtil()">＋ 신규로 초기화</button>
+        <span id="umodelabel" style="font-size:12px;color:var(--muted)"></span>
+        <span id="usavemsg" style="font-size:12px"></span>
+      </div>
+    </div>
+
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px">
+        <b>등록된 기능용 MCP</b>
+        <span style="font-size:11.5px;color:var(--dim)">승인 배지를 클릭하면(관리자 로그인 시) 승인/해제됩니다</span>
+      </div>
+      <table class="grid" id="utilstable">
+        <thead><tr><th>Tool</th><th>구분</th><th>항목(req/res)</th><th>작성자</th><th>승인</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
     </div>
   </section>
 
@@ -490,6 +563,55 @@
     { "uc_id": "UC-IC-003", "status": "확정", "approved": false, "approved_by": null, "approved_at": null, "created_at": "2026-07-15" },
     { "uc_id": "UC-GN-010", "status": "검토중", "approved": false, "approved_by": null, "approved_at": null, "created_at": "2026-07-22" }
   ],
+  "utils": [
+    { "id": 100001, "category": "time", "name": "get_current_time",
+      "description": "현재 서버 시각을 반환한다.",
+      "author_name": "김우리", "author_empno": "100245", "enabled": true,
+      "approved": true, "approved_by": "admin", "approved_at": "2026-07-20", "created_at": "2026-07-18",
+      "input_schema": { "type": "object", "properties": {
+        "timezone": { "type": "string", "description": "타임존 (예: Asia/Seoul)", "examples": ["Asia/Seoul"] }
+      }, "required": [] },
+      "mock_template": { "success": true, "data": { "now": "{{now}}", "timezone": "{{input.timezone}}" } } },
+    { "id": 100002, "category": "id", "name": "generate_uuid",
+      "description": "새 UUID를 생성해 반환한다.",
+      "author_name": "김우리", "author_empno": "100245", "enabled": true,
+      "approved": true, "approved_by": "admin", "approved_at": "2026-07-20", "created_at": "2026-07-18",
+      "input_schema": { "type": "object", "properties": {}, "required": [] },
+      "mock_template": { "success": true, "data": { "uuid": "{{uuid}}" } } },
+    { "id": 100003, "category": "mail", "name": "send_email",
+      "description": "지정한 수신자에게 이메일을 발송한다.",
+      "author_name": "박상담", "author_empno": "100300", "enabled": true,
+      "approved": true, "approved_by": "admin", "approved_at": "2026-07-21", "created_at": "2026-07-19",
+      "input_schema": { "type": "object", "properties": {
+        "to": { "type": "string", "description": "수신자 이메일", "examples": ["user@company.com"] },
+        "subject": { "type": "string", "description": "제목", "examples": ["알림"] },
+        "body": { "type": "string", "description": "본문", "examples": ["안녕하세요"] }
+      }, "required": ["to", "subject", "body"] },
+      "mock_template": { "success": true, "data": { "message_id": "{{uuid}}", "sent_to": "{{input.to}}", "sent_at": "{{now}}" } } },
+    { "id": 100004, "category": "msg", "name": "send_messenger_alert",
+      "description": "사내 메신저(슬랙 등) 채널로 알림 메시지를 전송한다.",
+      "author_name": "이관리", "author_empno": "100400", "enabled": true,
+      "approved": true, "approved_by": "admin", "approved_at": "2026-07-22", "created_at": "2026-07-20",
+      "input_schema": { "type": "object", "properties": {
+        "channel": { "type": "string", "description": "채널명", "examples": ["#alerts"] },
+        "message": { "type": "string", "description": "메시지 내용", "examples": ["배포가 완료되었습니다."] }
+      }, "required": ["channel", "message"] },
+      "mock_template": { "success": true, "data": { "channel": "{{input.channel}}", "delivered_at": "{{now}}" } } },
+    { "id": 100005, "category": "text", "name": "count_characters",
+      "description": "입력 문자열의 글자 수를 센다.",
+      "author_name": "최에이전트", "author_empno": "100500", "enabled": true,
+      "approved": false, "approved_by": null, "approved_at": null, "created_at": "2026-07-27",
+      "input_schema": { "type": "object", "properties": {
+        "text": { "type": "string", "description": "대상 문자열", "examples": ["안녕하세요"] }
+      }, "required": ["text"] },
+      "mock_template": { "success": true, "data": { "length": 5 } } },
+    { "id": 100006, "category": "misc", "name": "ping",
+      "description": "서비스 헬스체크용 ping tool.",
+      "author_name": "김우리", "author_empno": "100245", "enabled": true,
+      "approved": true, "approved_by": "admin", "approved_at": "2026-07-20", "created_at": "2026-07-18",
+      "input_schema": { "type": "object", "properties": {}, "required": [] },
+      "mock_template": { "success": true, "data": { "status": "ok", "checked_at": "{{now}}" } } }
+  ],
   "commons": [
     { "id": 1, "category": "ocr", "name": "common_ocr", "description": "OCR 계열 tool 공통 규격", "updated_at": "2026-07-01",
       "input_schema": { "type": "object", "properties": { "doc_type": { "type": "string", "description": "문서 종류", "examples": ["CARD"] } }, "required": ["doc_type"] },
@@ -520,15 +642,23 @@ function ensureDB(){
     let data={};
     try{ data=JSON.parse(g('mockdb-json').textContent); }
     catch(e){ console.error('[tool-helper] 목업 데이터 파싱 실패', e); data={}; }
-    MOCK={ tools:data.tools||[], ucs:data.ucs||[], commons:data.commons||[], logs:data.logs||[] };
+    MOCK={ tools:data.tools||[], ucs:data.ucs||[], commons:data.commons||[], logs:data.logs||[], utils:data.utils||[] };
   }
   return Promise.resolve();
 }
 function nextId(list){ return list.reduce((m,x)=>Math.max(m,x.id||0),0)+1; }
+function nextUtilId(list){ return list.reduce((m,x)=>Math.max(m,x.id||0),100000)+1; }
 function findTool(id){ return MOCK.tools.find(t=>t.id===Number(id)); }
 function findUC(id){ return MOCK.ucs.find(u=>u.uc_id===id); }
 function findCommon(id){ return MOCK.commons.find(c=>c.id===Number(id)); }
+function findUtil(id){ return MOCK.utils.find(u=>u.id===Number(id)); }
 function genTraceId(){ return 'trc-'+Math.random().toString(36).slice(2,10); }
+function genUUID(){
+  if(crypto&&crypto.randomUUID) return crypto.randomUUID();
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{
+    const r=Math.random()*16|0, v=c==='x'?r:(r&0x3|0x8); return v.toString(16);
+  });
+}
 function requireAdmin(headers){
   const tok=headers&&(headers['X-Admin-Token']||headers['x-admin-token']);
   if(tok!==ADMIN_TOKEN){ const e=new Error('관리자 인증이 필요합니다.'); e.status=401; throw e; }
@@ -542,6 +672,7 @@ function renderTemplate(node,args){
       expr=expr.trim();
       if(expr==='now') return new Date().toISOString();
       if(expr==='trace_id') return genTraceId();
+      if(expr==='uuid') return genUUID();
       if(expr.startsWith('input.')){ const key=expr.slice(6); return (args&&Object.prototype.hasOwnProperty.call(args,key))?args[key]:null; }
       return undefined;
     };
@@ -620,6 +751,34 @@ async function mockRoute(method,rawPath,body,headers){
     if(method==='DELETE'){ requireAdmin(headers); MOCK.commons=MOCK.commons.filter(c=>c.id!==cid); return {deleted:cid}; }
   }
 
+  if(seg[0]==='utils'){
+    if(seg.length===1){
+      if(method==='GET') return cloneJSON(MOCK.utils);
+      if(method==='POST'){
+        const u={ id:nextUtilId(MOCK.utils), category:body.category, name:body.name, description:body.description,
+          author_name:body.author_name||'익명', author_empno:body.author_empno||'', enabled:true,
+          approved:false, approved_by:null, approved_at:null, created_at:new Date().toISOString().slice(0,10),
+          input_schema:body.input_schema, mock_template:body.mock_template };
+        MOCK.utils.push(u); return cloneJSON(u);
+      }
+    }
+    if(seg[1]==='preview'&&method==='POST') return renderTemplate(body.mock_template,body.input_args||{});
+    const uid=Number(seg[1]); const u=findUtil(uid);
+    if(!u){ const e=new Error('기능용 MCP를 찾을 수 없습니다.'); e.status=404; throw e; }
+    if(seg[2]==='approve'&&method==='PUT'){
+      requireAdmin(headers);
+      u.approved=!!body.approved; u.approved_by=u.approved?(adminName||'admin'):null; u.approved_at=u.approved?new Date().toISOString().slice(0,10):null;
+      return cloneJSON(u);
+    }
+    if(method==='GET') return cloneJSON(u);
+    if(method==='PUT'){
+      Object.assign(u,{category:body.category,name:body.name,description:body.description,author_name:body.author_name||u.author_name,author_empno:body.author_empno||u.author_empno,input_schema:body.input_schema,mock_template:body.mock_template});
+      u.approved=false; u.approved_by=null; u.approved_at=null; // 수정 시 재승인 필요
+      return cloneJSON(u);
+    }
+    if(method==='DELETE'){ requireAdmin(headers); MOCK.utils=MOCK.utils.filter(x=>x.id!==uid); return {deleted:uid}; }
+  }
+
   if(seg[0]==='logs'&&method==='GET'){
     const limit=Number(params.get('limit')||100);
     const sorted=cloneJSON(MOCK.logs).sort((a,b)=>a.created_at<b.created_at?1:-1).slice(0,limit);
@@ -661,7 +820,7 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').re
 function badge(c){return `<span class="badge b-${c||'etc'}">${c||'etc'}</span>`;}
 
 // ---------- 탭 ----------
-const TABLOAD={catalog:loadCatalog, list:loadTools, uc:loadUC, dash:loadLogs, admin:loadAdmin};
+const TABLOAD={catalog:loadCatalog, utils:loadUtils, list:loadTools, uc:loadUC, dash:loadLogs, admin:loadAdmin};
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));
   document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));
@@ -861,10 +1020,128 @@ async function saveTool(){
   }
 }
 
+// ---------- 기능용 MCP (UC와 무관한 범용 유틸리티) ----------
+const UCATMETA={
+  time:{icon:'🕐',label:'시간/날짜'}, id:{icon:'🔑',label:'식별자/난수'}, text:{icon:'📝',label:'텍스트 처리'},
+  mail:{icon:'📧',label:'메일 발송'}, msg:{icon:'💬',label:'메신저/알림'}, misc:{icon:'🧰',label:'기타'}
+};
+const UPRESETS={
+  time:{name:'get_current_time',desc:'현재 서버 시각을 반환한다.',
+    req:[['timezone','string',false,'타임존 (예: Asia/Seoul)','Asia/Seoul']],
+    res:[['success','boolean','성공 여부','true'],['data.now','string','현재 시각 (ISO)','{{now}}'],['data.timezone','string','적용된 타임존','{{input.timezone}}']]},
+  id:{name:'generate_uuid',desc:'새 UUID를 생성해 반환한다.',
+    req:[],
+    res:[['success','boolean','성공 여부','true'],['data.uuid','string','생성된 UUID','{{uuid}}']]},
+  text:{name:'count_characters',desc:'입력 문자열의 글자 수를 센다.',
+    req:[['text','string',true,'대상 문자열','안녕하세요']],
+    res:[['success','boolean','성공 여부','true'],['data.length','number','글자 수','5']]},
+  mail:{name:'send_email',desc:'지정한 수신자에게 이메일을 발송한다.',
+    req:[['to','string',true,'수신자 이메일','user@company.com'],['subject','string',true,'제목','알림'],['body','string',true,'본문','안녕하세요']],
+    res:[['success','boolean','성공 여부','true'],['data.message_id','string','발송 메시지 ID','{{uuid}}'],['data.sent_to','string','수신자','{{input.to}}'],['data.sent_at','string','발송 시각','{{now}}']]},
+  msg:{name:'send_messenger_alert',desc:'사내 메신저(슬랙 등) 채널로 알림 메시지를 전송한다.',
+    req:[['channel','string',true,'채널명','#alerts'],['message','string',true,'메시지 내용','배포가 완료되었습니다.']],
+    res:[['success','boolean','성공 여부','true'],['data.channel','string','채널명','{{input.channel}}'],['data.delivered_at','string','전송 시각','{{now}}']]},
+  misc:{name:'ping',desc:'서비스 헬스체크용 ping tool.',
+    req:[],
+    res:[['success','boolean','성공 여부','true'],['data.status','string','상태','ok'],['data.checked_at','string','확인 시각','{{now}}']]}
+};
+let editUtilId=null, _utilsRaw=[];
+function addUField(k){ g('u'+k+'body').insertAdjacentHTML('beforeend', k==='req'?fieldRowReq():fieldRowRes()); }
+function setUMode(){
+  const upd=!!editUtilId;
+  g('umodelabel').textContent = upd?`✎ 수정 중 (id=${editUtilId}) — 저장 시 재승인 필요`:'신규 작성';
+  g('usavebtn').textContent = upd?'수정 저장 · 재승인 요청':'저장 · 승인 요청';
+}
+function newUtil(){ editUtilId=null; g('u-cat').value='time'; applyUPreset(); g('u-empname').value=''; setUMode(); }
+function applyUPreset(){
+  const p=UPRESETS[g('u-cat').value];
+  g('u-name').value=p.name; g('u-desc').value=p.desc;
+  g('ureqbody').innerHTML=p.req.map(fieldRowReq).join('');
+  g('uresbody').innerHTML=p.res.map(fieldRowRes).join('');
+  setUMode(); renderUPreview();
+}
+let _pvUTimer=null;
+function renderUPreview(){
+  const name=g('u-name').value.trim();
+  g('u-exposed').textContent=`util__${name}`;
+  const reqF=readFields('ureqbody',true), resF=readFields('uresbody',false);
+  const tpl=buildMockTemplate(resF);
+  const sample={}; reqF.forEach(f=>{ if(f.ex!=='') sample[f.path]=coerce(f.type,f.ex); });
+  g('pv-ureq').textContent=JSON.stringify(sample,null,2);
+  clearTimeout(_pvUTimer);
+  _pvUTimer=setTimeout(async()=>{
+    try{
+      const out=await api('/tools/preview',{method:'POST',body:JSON.stringify({mock_template:tpl,input_args:sample})});
+      g('pv-ures').textContent=JSON.stringify(out,null,2); g('pv-ures').style.color='';
+    }catch(e){ g('pv-ures').textContent='preview 오류: '+e.message; g('pv-ures').style.color='var(--warn)'; }
+  },250);
+}
+async function saveUtil(){
+  const m=g('usavemsg');
+  const show=(t,ok)=>{m.textContent=t;m.style.color=ok?'var(--ok)':'var(--err)';if(ok)setTimeout(()=>m.textContent='',3500);};
+  const name=g('u-name').value.trim();
+  if(!name){ show('⚠ tool 이름을 입력하세요.',false); return; }
+  const reqF=readFields('ureqbody',true), resF=readFields('uresbody',false);
+  const base={ category:g('u-cat').value, name, description:g('u-desc').value.trim(),
+    author_name:g('u-empname').value.trim(),
+    input_schema:buildInputSchema(reqF), mock_template:buildMockTemplate(resF) };
+  const upd=!!editUtilId;
+  const summary=(upd?`[수정] id=${editUtilId} 기존 기능용 MCP를 수정합니다. (재승인 필요)`:'[신규] 새 기능용 MCP를 등록합니다. (관리자 승인 필요)')
+    + `\n\n구분   : ${UCATMETA[base.category].label}\n이름   : ${name}\nReq ${reqF.length}개 · Res ${resF.length}개\n\n저장할까요?`;
+  if(!confirm(summary)) { show('저장 취소됨',false); return; }
+  try{
+    if(upd){ await api('/utils/'+editUtilId,{method:'PUT',body:JSON.stringify(base)}); show('✓ 수정 반영됨 · 관리자 재승인 대기',true); }
+    else{ const created=await api('/utils',{method:'POST',body:JSON.stringify(base)}); editUtilId=created.id; setUMode(); show(`✓ 등록됨 (id=${created.id}) · 관리자 승인 대기`,true); }
+  }catch(e){ show('오류: '+e.message,false); return; }
+  await loadUtils();
+}
+async function loadUtils(){ _utilsRaw=await api('/utils'); drawUtilsTable(); }
+function drawUtilsTable(){
+  g('utilstable').tBodies[0].innerHTML=_utilsRaw.length?_utilsRaw.map(u=>{
+    const rq=Object.keys((u.input_schema&&u.input_schema.properties)||{}).length;
+    const rs=flattenLeaves(u.mock_template||{}).length;
+    const meta=UCATMETA[u.category]||{icon:'🧩',label:u.category};
+    const apprCell=adminToken
+      ? `<span class="ucstatus ${u.approved?'done':'wip'}" onclick="approveUtil(${u.id},${u.approved?0:1})">${u.approved?'✓ 승인됨 (해제)':'승인하기'}</span>`
+      : (u.approved?`<span class="st-dot done" title="${esc(u.approved_by||'')} · ${esc(u.approved_at||'')}">✓ 승인</span>`:`<span class="st-dot wip">승인 대기</span>`);
+    return `<tr>
+      <td class="toolname"><a class="expand" onclick="editUtil(${u.id})">${esc(u.name)}</a><small>${esc(u.description)}</small></td>
+      <td>${meta.icon} ${meta.label}</td>
+      <td class="countpair"><span class="rq">${rq}</span> / <span class="rs">${rs}</span></td>
+      <td class="mono">${esc(u.author_name||'-')}</td>
+      <td>${apprCell}</td>
+      <td>${adminToken?`<a class="expand" style="color:var(--err)" onclick="delUtil(${u.id},'${esc(u.name)}')">삭제</a>`:''}</td>
+    </tr>`;
+  }).join(''):`<tr><td colspan="6" class="empty">등록된 기능용 MCP가 없습니다 — 위 폼에서 추가하세요</td></tr>`;
+}
+async function editUtil(id){
+  const u=await api('/utils/'+id);
+  g('u-cat').value=u.category; g('u-name').value=u.name; g('u-desc').value=u.description; g('u-empname').value=u.author_name||'';
+  const rr=schemaToReqRows(u.input_schema); g('ureqbody').innerHTML=(rr.length?rr:[['','string',false,'','']]).map(fieldRowReq).join('');
+  const sr=templateToResRows(u.mock_template); g('uresbody').innerHTML=(sr.length?sr:[['','string','','']]).map(fieldRowRes).join('');
+  editUtilId=id; setUMode();
+  document.querySelector('nav button[data-view="utils"]').click();
+  renderUPreview();
+}
+async function delUtil(id,name){
+  if(!adminToken){ alert('관리자 로그인이 필요합니다.'); return; }
+  if(!confirm(`기능용 MCP 삭제: ${name} (id=${id})\n삭제하시겠습니까?`)) return;
+  try{ await api('/utils/'+id,{method:'DELETE',headers:adminH()}); }
+  catch(e){ alert('삭제 실패: '+e.message); return; }
+  if(editUtilId===id) newUtil();
+  await loadUtils();
+}
+async function approveUtil(id,approved){
+  if(!adminToken){ alert('관리자 로그인이 필요합니다.'); return; }
+  try{ await api('/utils/'+id+'/approve',{method:'PUT',headers:adminH(),body:JSON.stringify({approved:!!approved})}); }
+  catch(e){ if(e.status===401){adminLogout();alert('세션 만료 — 관리자 재로그인');} else alert('승인 실패: '+e.message); return; }
+  await loadUtils();
+}
+
 // ---------- 상태 캐시 ----------
 let _tools=[], _ucs=[], activeUC='all';
 function normalize(t){
-  return { id:t.id, name:t.name, desc:t.description, uc:t.uc_id, cat:t.category,
+  return { id:t.id, kind:'uc', name:t.name, desc:t.description, uc:t.uc_id, cat:t.category,
     owner:t.author_name, empno:t.author_empno, enabled:t.enabled,
     input_schema:t.input_schema, mock_template:t.mock_template,
     rq:Object.keys((t.input_schema&&t.input_schema.properties)||{}).length,
@@ -883,14 +1160,36 @@ const CATMETA={
   ocr:{icon:'🧾',label:'문서 처리 · OCR',desc:'이미지·문서에서 텍스트/필드를 추출하는 tool'},
   stt:{icon:'🎙️',label:'음성 전사 · STT',desc:'음성을 텍스트로 변환하는 tool'},
   db:{icon:'🗄️',label:'레코드 조회 · DB',desc:'사내 DB/시스템 레코드를 조회하는 tool'},
-  etc:{icon:'🧩',label:'기타 · 범용',desc:'분류되지 않은 범용 유틸리티 tool'}
+  etc:{icon:'🧩',label:'기타 · 범용',desc:'분류되지 않은 범용 유틸리티 tool'},
+  time:{icon:'🕐',label:'개발유틸 · 시간/날짜',desc:'현재 시각 등 시간 정보를 반환하는 범용 tool (UC 무관)'},
+  id:{icon:'🔑',label:'개발유틸 · 식별자/난수',desc:'UUID 등 식별자를 생성하는 범용 tool (UC 무관)'},
+  text:{icon:'📝',label:'개발유틸 · 텍스트 처리',desc:'문자열을 가공/분석하는 범용 tool (UC 무관)'},
+  mail:{icon:'📧',label:'개발유틸 · 메일 발송',desc:'이메일 발송을 수행하는 범용 tool (UC 무관)'},
+  msg:{icon:'💬',label:'개발유틸 · 메신저 알림',desc:'메신저/슬랙 알림을 보내는 범용 tool (UC 무관)'},
+  misc:{icon:'🧰',label:'개발유틸 · 기타',desc:'분류되지 않은 범용 개발 유틸리티 tool (UC 무관)'}
 };
-const CATORDER=['ocr','stt','db','etc'];
+const CATORDER=['ocr','stt','db','etc','time','id','text','mail','msg','misc'];
 let catActiveCat='all';
-async function loadCatalog(){ await fetchState(); renderCatalog(); }
+let _catalogUtils=[], _catalogAll=[];
+async function loadCatalog(){
+  await fetchState();
+  try{ _catalogUtils=(await api('/utils')).filter(u=>u.approved).map(normalizeUtilForCatalog); }
+  catch(e){ _catalogUtils=[]; console.error(e); }
+  _catalogAll=_tools.concat(_catalogUtils);
+  renderCatalog();
+}
+function normalizeUtilForCatalog(u){
+  return { id:u.id, kind:'util', name:u.name, desc:u.description, cat:u.category, owner:u.author_name||'-',
+    uc:null, approved:!!u.approved, enabled:u.enabled,
+    input_schema:u.input_schema, mock_template:u.mock_template,
+    rq:Object.keys((u.input_schema&&u.input_schema.properties)||{}).length,
+    rs:flattenLeaves(u.mock_template||{}).length };
+}
+function catalogItem(id){ return _catalogAll.find(x=>x.id===id); }
+function exposedName(t){ return t.kind==='util' ? 'util__'+t.name : `${t.uc}__${t.name}`; }
 function matchesCatQuery(t,q){
   if(!q) return true;
-  return (t.name+' '+t.desc+' '+t.uc).toLowerCase().includes(q);
+  return (t.name+' '+t.desc+' '+(t.uc||'')).toLowerCase().includes(q);
 }
 function drawCatChips(){
   const box=g('cat-catfilter');
@@ -901,15 +1200,21 @@ function drawCatChips(){
 let selectedTools=new Set();
 function toolCard(t){
   const sel=selectedTools.has(t.id);
+  const isUtil=t.kind==='util';
+  const statusBadges=isUtil
+    ? (t.approved?'<span class="st-dot done">✓ 승인</span>':'<span class="st-dot wip">승인 대기</span>')
+    : stDot(t.uc)+(ucApproved(t.uc)?'<span class="st-dot done" title="관리자 승인됨">✓ 승인</span>':'');
+  const editFn=isUtil?'editUtil':'editTool';
+  const idPill=isUtil?'<span class="uc" style="opacity:.7">UC 무관</span>':`<span class="uc">${esc(t.uc)}</span>`;
   return `<div class="toolcard ${sel?'selected':''}">
     <div class="toolcard-h">
-      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">${badge(t.cat)}${stDot(t.uc)}${ucApproved(t.uc)?'<span class="st-dot done" title="관리자 승인됨">✓ 승인</span>':''}</div>
-      <a class="expand" onclick="editTool(${t.id})">규격 →</a>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">${badge(t.cat)}${statusBadges}</div>
+      <a class="expand" onclick="${editFn}(${t.id})">규격 →</a>
     </div>
     <div class="toolcard-title">${esc(t.name)}</div>
     <div class="toolcard-desc">${esc(t.desc)||'설명 없음'}</div>
     <div class="toolcard-meta">
-      <span class="uc">${esc(t.uc)}</span>
+      ${idPill}
       <span class="countpair"><span class="rq">${t.rq}</span>/<span class="rs">${t.rs}</span></span>
       <span class="mono" style="color:var(--dim)">${esc(t.owner)}</span>
     </div>
@@ -927,7 +1232,7 @@ function renderCatalog(){
   let any=false;
   body.innerHTML=CATORDER.filter(c=>catActiveCat==='all'||catActiveCat===c).map(cat=>{
     const meta=CATMETA[cat];
-    const items=_tools.filter(t=>t.cat===cat && matchesCatQuery(t,q));
+    const items=_catalogAll.filter(t=>t.cat===cat && matchesCatQuery(t,q));
     if(!items.length) return '';
     any=true;
     return `<div class="catsection">
@@ -940,10 +1245,13 @@ function renderCatalog(){
     </div>`;
   }).join('');
   if(!any) body.innerHTML=`<div class="empty" style="padding:60px 0">검색/필터 조건에 맞는 tool이 없습니다.</div>`;
-  g('cs-total').textContent=_tools.length;
-  g('cs-approved').textContent=_tools.filter(t=>ucApproved(t.uc)).length;
+  g('cs-total').textContent=_catalogAll.length;
+  g('cs-approved').textContent=_catalogAll.filter(t=>t.kind==='util'?t.approved:ucApproved(t.uc)).length;
+  g('cs-cat').textContent=CATORDER.length;
 }
-function mcpOrigin(){ return (location.origin&&location.origin!=='null')?location.origin.replace(/\/$/,''):'https://your-mcp-host'; }
+// 이 페이지가 어떤 도메인(예: GitHub Pages)에서 열려도 실제 MCP 서버 주소가 아니므로,
+// location.origin을 추정해 쓰지 않고 항상 일반적인 예시 주소를 기본값으로 보여준다.
+function mcpOrigin(){ return 'https://your-mcp-host'; }
 function defaultBaseUrl(){ return mcpOrigin()+'/mcp'; }
 
 // ---------- 개발자 패널: 선택 / 테스트 실행 / 코드 스니펫 ----------
@@ -951,7 +1259,7 @@ let _devLang={};
 function toggleDev(id){
   const panel=g('dev-'+id);
   if(panel.classList.contains('on')){ panel.classList.remove('on'); panel.innerHTML=''; return; }
-  const t=_tools.find(x=>x.id===id); if(!t) return;
+  const t=catalogItem(id); if(!t) return;
   const reqRows=schemaToReqRows(t.input_schema);
   panel.innerHTML=`
     <div class="devtabs">
@@ -1020,7 +1328,7 @@ function pyDict(obj){
   return `{${Object.entries(obj).map(([k,v])=>`"${k}": ${pyLit(v)}`).join(', ')}}`;
 }
 async function runMock(id){
-  const t=_tools.find(x=>x.id===id); if(!t) return;
+  const t=catalogItem(id); if(!t) return;
   const msg=g('testmsg-'+id); msg.textContent='Mock 실행 중…'; msg.style.color='var(--dim)';
   const args=collectArgs(id);
   try{
@@ -1033,11 +1341,11 @@ async function runMock(id){
   }
 }
 async function runRealCall(id){
-  const t=_tools.find(x=>x.id===id); if(!t) return;
+  const t=catalogItem(id); if(!t) return;
   const msg=g('testmsg-'+id);
   const base=currentBaseUrl(id);
   if(!base){ msg.textContent='⚠ Base URL을 입력하세요'; msg.style.color='var(--err)'; return; }
-  const exposed=`${t.uc}__${t.name}`;
+  const exposed=exposedName(t);
   const args=collectArgs(id);
   msg.textContent='실서버 호출 중… ('+base+'/tools/call)'; msg.style.color='var(--dim)';
   const started=performance.now();
@@ -1053,8 +1361,8 @@ async function runRealCall(id){
   }
 }
 function renderCodeSnippet(id,lang){
-  const t=_tools.find(x=>x.id===id); if(!t) return;
-  const exposed=`${t.uc}__${t.name}`;
+  const t=catalogItem(id); if(!t) return;
+  const exposed=exposedName(t);
   const args=collectArgs(id);
   const base=currentBaseUrl(id);
   let code='';
@@ -1092,7 +1400,7 @@ function toggleSelect(id){
 function renderTray(){
   const tray=g('selecttray');
   if(!selectedTools.size){ tray.classList.remove('on'); tray.innerHTML=''; g('bundlepanel').classList.remove('on'); g('bundlepanel').innerHTML=''; return; }
-  const names=[...selectedTools].map(id=>{const t=_tools.find(x=>x.id===id);return t?`${t.uc}__${t.name}`:'';}).filter(Boolean);
+  const names=[...selectedTools].map(id=>{const t=catalogItem(id);return t?exposedName(t):'';}).filter(Boolean);
   tray.innerHTML=`
     <b>🧰 선택한 Tool ${selectedTools.size}개</b>
     <div class="chips2">${names.map(n=>`<span class="chip2">${esc(n)}</span>`).join('')}</div>
@@ -1113,8 +1421,8 @@ function openBundle(){
   const base=defaultBaseUrl();
   const servers={};
   selectedTools.forEach(id=>{
-    const t=_tools.find(x=>x.id===id); if(!t) return;
-    const exposed=`${t.uc}__${t.name}`;
+    const t=catalogItem(id); if(!t) return;
+    const exposed=exposedName(t);
     servers[exposed]={url:base,transport:'http',tool:exposed};
   });
   const snippet=JSON.stringify({mcpServers:servers},null,2);
@@ -1307,9 +1615,10 @@ function updateAdminUI(){
   g('admin-panel').style.display=on?'':'none';
   g('adm-who').textContent=adminName;
   if(g('bulkdel')) g('bulkdel').style.display=on?'':'none';
-  // 목록/ UC 탭이 열려 있으면 관리자 컨트롤 즉시 반영
+  // 목록/ UC/ 기능용 MCP 탭이 열려 있으면 관리자 컨트롤 즉시 반영
   if(g('list').classList.contains('on') && _tools.length) drawTools(activeUC);
   if(g('uc').classList.contains('on') && _ucs.length) drawUCPage();
+  if(g('utils').classList.contains('on') && _utilsRaw.length) drawUtilsTable();
 }
 async function loadAdmin(){
   updateAdminUI();
@@ -1413,6 +1722,7 @@ async function approveUC(id, approved){
 // ---------- init ----------
 dbg('UI 로드 · location =', location.href, '· JSON 목업 DB 모드 (백엔드 불필요)');
 applyPreset();
+newUtil();
 updateAdminUI();
 loadCommonOptions();
 loadCatalog().catch(err=>console.error(err));
