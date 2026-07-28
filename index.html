@@ -158,13 +158,9 @@
   .catstat{display:flex;flex-direction:column;gap:2px}
   .catstat b{font-size:22px}
   .catstat span{font-size:11.5px;color:var(--muted)}
-  .catsection{margin-bottom:26px}
-  .catsection-h{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
-  .catsection-icon{font-size:20px;width:40px;height:40px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;background:var(--panel2);border:1px solid var(--line);border-radius:10px}
-  .catsection-title{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
-  .catsection-count{font-size:11px;font-weight:600;color:var(--muted);background:var(--panel2);border:1px solid var(--line);border-radius:20px;padding:1px 8px}
-  .catsection-desc{font-size:12px;color:var(--muted);margin-top:2px}
-  .catgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+  .catgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+  @media(max-width:900px){.catgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:600px){.catgrid{grid-template-columns:1fr}}
   .toolcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:9px;transition:.12s}
   .toolcard:hover{border-color:var(--accent)}
   .toolcard.selected{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
@@ -1229,22 +1225,15 @@ function renderCatalog(){
   drawCatChips();
   const q=(g('cat-search').value||'').trim().toLowerCase();
   const body=g('catalog-body');
-  let any=false;
-  body.innerHTML=CATORDER.filter(c=>catActiveCat==='all'||catActiveCat===c).map(cat=>{
-    const meta=CATMETA[cat];
-    const items=_catalogAll.filter(t=>t.cat===cat && matchesCatQuery(t,q));
-    if(!items.length) return '';
-    any=true;
-    return `<div class="catsection">
-      <div class="catsection-h">
-        <div class="catsection-icon">${meta.icon}</div>
-        <div><div class="catsection-title">${meta.label}<span class="catsection-count">${items.length}</span></div>
-        <div class="catsection-desc">${meta.desc}</div></div>
-      </div>
-      <div class="catgrid">${items.map(toolCard).join('')}</div>
-    </div>`;
-  }).join('');
-  if(!any) body.innerHTML=`<div class="empty" style="padding:60px 0">검색/필터 조건에 맞는 tool이 없습니다.</div>`;
+  const items=_catalogAll
+    .filter(t=>(catActiveCat==='all'||t.cat===catActiveCat)&&matchesCatQuery(t,q))
+    .sort((a,b)=>{
+      const ai=CATORDER.indexOf(a.cat), bi=CATORDER.indexOf(b.cat);
+      return ai!==bi ? ai-bi : a.name.localeCompare(b.name);
+    });
+  body.innerHTML = items.length
+    ? `<div class="catgrid">${items.map(toolCard).join('')}</div>`
+    : `<div class="empty" style="padding:60px 0">검색/필터 조건에 맞는 tool이 없습니다.</div>`;
   g('cs-total').textContent=_catalogAll.length;
   g('cs-approved').textContent=_catalogAll.filter(t=>t.kind==='util'?t.approved:ucApproved(t.uc)).length;
   g('cs-cat').textContent=CATORDER.length;
