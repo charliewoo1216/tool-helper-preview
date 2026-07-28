@@ -6,24 +6,25 @@
 <title>MCP Tool Helper — 목업</title>
 <style>
   :root{
-    --bg:#0e1116; --panel:#161b22; --panel2:#1c232d; --line:#2a323d;
-    --ink:#e6edf3; --muted:#8b949e; --dim:#6e7681;
-    --accent:#4c8dff; --accent2:#2b6fe0;
-    --req:#39c5cf; --res:#3fb950;
-    --ok:#3fb950; --warn:#d29922; --err:#f85149;
-    --ocr:#a371f7; --stt:#39c5cf; --db:#e3b341; --etc:#8b949e;
+    --bg:#ffffff; --panel:#ffffff; --panel2:#eef5ff; --line:#c7dcf5;
+    --ink:#0a0e17; --muted:#5b6b84; --dim:#8a97ac;
+    --accent:#155ee0; --accent2:#0d3fa8;
+    --navy:#0b1220; --navy2:#050810;
+    --req:#0891b2; --res:#16a34a;
+    --ok:#16a34a; --warn:#b45309; --err:#dc2626;
+    --ocr:#7c3aed; --stt:#0891b2; --db:#b45309; --etc:#5b6b84;
     --radius:10px; --mono:'Cascadia Code',ui-monospace,'SF Mono',Consolas,monospace;
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);
     font-family:'Segoe UI',-apple-system,system-ui,'Malgun Gothic',sans-serif;font-size:14px;line-height:1.5}
-  header{display:flex;align-items:center;gap:14px;padding:14px 22px;border-bottom:1px solid var(--line);
-    background:linear-gradient(180deg,#171d26,#12161c);position:sticky;top:0;z-index:10}
-  .logo{display:flex;align-items:center;gap:10px;font-weight:700}
-  .logo .dot{width:11px;height:11px;border-radius:3px;background:var(--accent);box-shadow:0 0 12px var(--accent)}
-  .logo small{font-weight:500;color:var(--muted)}
-  .flow{margin-left:6px;font-size:12px;color:var(--dim);font-family:var(--mono)}
-  .flow b{color:var(--muted)}
+  header{display:flex;align-items:center;gap:14px;padding:14px 22px;border-bottom:1px solid var(--navy);
+    background:linear-gradient(180deg,var(--navy),var(--navy2));position:sticky;top:0;z-index:10}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:700;color:#fff}
+  .logo .dot{width:11px;height:11px;border-radius:3px;background:#3b82f6;box-shadow:0 0 12px #3b82f6}
+  .logo small{font-weight:500;color:#8a97ac}
+  .flow{margin-left:6px;font-size:12px;color:#6b7994;font-family:var(--mono)}
+  .flow b{color:#c7d4ea}
   .spacer{flex:1}
   .pill{font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:20px;padding:4px 11px;background:var(--panel)}
   .pill .g{color:var(--ok)}
@@ -60,7 +61,7 @@
   .fields{width:100%;border-collapse:collapse}
   .fields th{text-align:left;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;
     padding:6px 8px;border-bottom:1px solid var(--line);font-weight:600}
-  .fields td{padding:4px 6px;border-bottom:1px solid #212a34;vertical-align:middle}
+  .fields td{padding:4px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
   .fields tr:last-child td{border-bottom:none}
   .fields input,.fields select{padding:6px 8px;font-size:12.5px;background:var(--panel2)}
   .fields input.path{font-family:var(--mono);color:var(--ink)}
@@ -100,7 +101,7 @@
   .stat .l{font-size:12px;color:var(--muted);margin-top:2px}
   .chips{display:flex;gap:6px;flex-wrap:wrap}
   .chip{font-size:11px;padding:3px 9px;border-radius:20px;background:var(--panel2);border:1px solid var(--line);color:var(--muted);cursor:pointer}
-  .chip.on{border-color:var(--accent);color:var(--ink);background:#1b2a44}
+  .chip.on{border-color:var(--accent);color:var(--ink);background:#dbeafe}
   .filterbar{display:flex;gap:8px;align-items:center;margin-bottom:16px;flex-wrap:wrap}.filterbar .grow{flex:1}
   .listwrap{display:grid;grid-template-columns:1fr 300px;gap:16px;align-items:start}
   @media(max-width:900px){.listwrap{grid-template-columns:1fr}}
@@ -109,7 +110,7 @@
   .ucpanel>h3 small{font-weight:400;color:var(--dim);font-size:11px}
   .uccard{border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:9px;cursor:pointer;background:var(--panel2);transition:.12s}
   .uccard:hover{border-color:var(--accent)}
-  .uccard.on{border-color:var(--accent);background:#1b2a44}
+  .uccard.on{border-color:var(--accent);background:#dbeafe}
   .uccard-h{display:flex;justify-content:space-between;align-items:center;gap:8px}
   .uccard-m{font-size:11.5px;color:var(--dim);margin-top:6px;font-family:var(--mono)}
   .ucstatus{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;cursor:pointer;white-space:nowrap;border:1px solid transparent}
@@ -126,7 +127,7 @@
   .tspec-h b{font-size:14px}
   .spectbl{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:4px}
   .spectbl th{text-align:left;font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;padding:5px 8px;border-bottom:1px solid var(--line);font-weight:600}
-  .spectbl td{padding:6px 8px;border-bottom:1px solid #212a34;vertical-align:top}
+  .spectbl td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
   .spectbl tr:last-child td{border-bottom:none}
   .spectbl .req-y{color:var(--req);font-weight:700}
   .spectbl .req-n{color:var(--dim)}
@@ -142,6 +143,39 @@
   details.gen{margin-top:12px}
   details.gen summary{cursor:pointer;color:var(--muted);font-size:12px;font-family:var(--mono)}
   details.gen[open] summary{margin-bottom:8px}
+
+  /* ===== Tool 카탈로그 (Smithery 스타일 마켓플레이스) ===== */
+  .cathero{background:linear-gradient(135deg,#eef4ff,#f8fafc);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin-bottom:20px}
+  .cathero-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .cathero-top h2{margin:0}
+  .catstats{display:flex;gap:28px;margin-top:16px;flex-wrap:wrap}
+  .catstat{display:flex;flex-direction:column;gap:2px}
+  .catstat b{font-size:22px}
+  .catstat span{font-size:11.5px;color:var(--muted)}
+  .catsection{margin-bottom:26px}
+  .catsection-h{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
+  .catsection-icon{font-size:20px;width:40px;height:40px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;background:var(--panel2);border:1px solid var(--line);border-radius:10px}
+  .catsection-title{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .catsection-count{font-size:11px;font-weight:600;color:var(--muted);background:var(--panel2);border:1px solid var(--line);border-radius:20px;padding:1px 8px}
+  .catsection-desc{font-size:12px;color:var(--muted);margin-top:2px}
+  .catgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+  .toolcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:9px;transition:.12s}
+  .toolcard:hover{border-color:var(--accent)}
+  .toolcard-h{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .toolcard-title{font-size:14.5px;font-weight:700}
+  .toolcard-desc{font-size:12px;color:var(--muted);min-height:32px}
+  .toolcard-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:11.5px}
+  .toolcard-foot{display:flex;justify-content:space-between;align-items:center;margin-top:4px}
+  .installpanel{display:none;margin-top:6px;padding-top:12px;border-top:1px solid var(--line)}
+  .installpanel.on{display:block}
+  .installhdr{font-size:12.5px;font-weight:700;margin-bottom:8px;color:var(--ink)}
+  .installstep{margin-bottom:10px}
+  .installstep>b{display:block;font-size:11.5px;color:var(--muted);margin-bottom:5px;font-weight:600}
+  .codeblock{position:relative}
+  .codeblock pre{margin:0;padding-right:56px}
+  .copybtn{position:absolute;top:8px;right:8px;background:var(--panel);border:1px solid var(--line);color:var(--muted);font-size:10.5px;padding:3px 8px;border-radius:6px;cursor:pointer}
+  .copybtn:hover{color:var(--ink);border-color:var(--accent)}
+  .installnote{font-size:11px;color:var(--dim)}
 </style>
 </head>
 <body>
@@ -154,7 +188,8 @@
 </header>
 
 <nav>
-  <button class="on" data-view="register">➕ Tool 계약 정의</button>
+  <button class="on" data-view="catalog">🧩 Tool 카탈로그</button>
+  <button data-view="register">➕ Tool 계약 정의</button>
   <button data-view="list">📋 Tool 목록</button>
   <button data-view="uc">🗂 UC 현황</button>
   <button data-view="dash">📊 호출 대시보드</button>
@@ -162,8 +197,31 @@
 </nav>
 
 <main>
+  <!-- ========== Tool 카탈로그 (Smithery 스타일 마켓플레이스) ========== -->
+  <section class="view on" id="catalog">
+    <div class="cathero">
+      <div class="cathero-top">
+        <h2>🧩 MCP Tool 카탈로그</h2>
+        <span class="pill">사내 전용 · Enterprise Registry</span>
+      </div>
+      <p class="sub" style="margin-bottom:0">사내 에이전트가 즉시 연동할 수 있는 MCP tool을 기능별로 탐색하고, 카드에서 바로 설치·연동 방법을 확인하세요.</p>
+      <div class="catstats">
+        <div class="catstat"><b id="cs-total">0</b><span>전체 tool</span></div>
+        <div class="catstat"><b id="cs-approved" style="color:var(--ok)">0</b><span>관리자 승인 완료</span></div>
+        <div class="catstat"><b id="cs-cat">4</b><span>기능 카테고리</span></div>
+      </div>
+    </div>
+
+    <div class="filterbar">
+      <input id="cat-search" class="grow" placeholder="tool 이름 · 설명 · UC ID로 검색…" oninput="renderCatalog()">
+      <div class="chips" id="cat-catfilter"></div>
+    </div>
+
+    <div id="catalog-body"></div>
+  </section>
+
   <!-- ========== 등록 (계약 정의) ========== -->
-  <section class="view on" id="register">
+  <section class="view" id="register">
     <h2>MCP Tool 계약 정의 <span style="font-size:13px;color:var(--muted);font-weight:400">— agent 기준 Request / Response</span></h2>
     <p class="sub">에이전트가 <b style="color:var(--req)">무엇을 보내야 하고</b>, <b style="color:var(--res)">무엇을 돌려받는지</b>를 항목 단위로 정의합니다. 저장 즉시 <span class="mono">/mcp</span>에 노출됩니다.</p>
 
@@ -383,7 +441,7 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').re
 function badge(c){return `<span class="badge b-${c||'etc'}">${c||'etc'}</span>`;}
 
 // ---------- 탭 ----------
-const TABLOAD={list:loadTools, uc:loadUC, dash:loadLogs, admin:loadAdmin};
+const TABLOAD={catalog:loadCatalog, list:loadTools, uc:loadUC, dash:loadLogs, admin:loadAdmin};
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));
   document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));
@@ -598,6 +656,98 @@ async function fetchState(){
 }
 function ucStatus(id){const u=_ucs.find(x=>x.uc_id===id);return u?u.status:'검토중';}
 function stDot(id){const d=ucStatus(id)==='확정';return `<span class="st-dot ${d?'done':'wip'}">${d?'확정':'검토중'}</span>`;}
+function ucApproved(id){const u=_ucs.find(x=>x.uc_id===id);return !!(u&&u.approved);}
+
+// ---------- Tool 카탈로그 (기능별 마켓플레이스) ----------
+const CATMETA={
+  ocr:{icon:'🧾',label:'문서 처리 · OCR',desc:'이미지·문서에서 텍스트/필드를 추출하는 tool'},
+  stt:{icon:'🎙️',label:'음성 전사 · STT',desc:'음성을 텍스트로 변환하는 tool'},
+  db:{icon:'🗄️',label:'레코드 조회 · DB',desc:'사내 DB/시스템 레코드를 조회하는 tool'},
+  etc:{icon:'🧩',label:'기타 · 범용',desc:'분류되지 않은 범용 유틸리티 tool'}
+};
+const CATORDER=['ocr','stt','db','etc'];
+let catActiveCat='all';
+async function loadCatalog(){ await fetchState(); renderCatalog(); }
+function matchesCatQuery(t,q){
+  if(!q) return true;
+  return (t.name+' '+t.desc+' '+t.uc).toLowerCase().includes(q);
+}
+function drawCatChips(){
+  const box=g('cat-catfilter');
+  const items=[['all','전체']].concat(CATORDER.map(c=>[c, CATMETA[c].icon+' '+CATMETA[c].label.split(' · ')[1]]));
+  box.innerHTML=items.map(([k,label])=>`<span class="chip ${catActiveCat===k?'on':''}" data-cat="${k}">${label}</span>`).join('');
+  box.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{catActiveCat=c.dataset.cat;renderCatalog();});
+}
+function toolCard(t){
+  return `<div class="toolcard">
+    <div class="toolcard-h">
+      ${badge(t.cat)}${stDot(t.uc)}${ucApproved(t.uc)?'<span class="st-dot done" title="관리자 승인됨">✓ 승인</span>':''}
+    </div>
+    <div class="toolcard-title">${esc(t.name)}</div>
+    <div class="toolcard-desc">${esc(t.desc)||'설명 없음'}</div>
+    <div class="toolcard-meta">
+      <span class="uc">${esc(t.uc)}</span>
+      <span class="countpair"><span class="rq">${t.rq}</span>/<span class="rs">${t.rs}</span></span>
+      <span class="mono" style="color:var(--dim)">${esc(t.owner)}</span>
+    </div>
+    <div class="toolcard-foot">
+      <button class="btn ghost sm" onclick="toggleInstall(${t.id})">🔌 설치 방법</button>
+      <a class="expand" onclick="editTool(${t.id})">규격 보기 →</a>
+    </div>
+    <div class="installpanel" id="inst-${t.id}"></div>
+  </div>`;
+}
+function renderCatalog(){
+  drawCatChips();
+  const q=(g('cat-search').value||'').trim().toLowerCase();
+  const body=g('catalog-body');
+  let any=false;
+  body.innerHTML=CATORDER.filter(c=>catActiveCat==='all'||catActiveCat===c).map(cat=>{
+    const meta=CATMETA[cat];
+    const items=_tools.filter(t=>t.cat===cat && matchesCatQuery(t,q));
+    if(!items.length) return '';
+    any=true;
+    return `<div class="catsection">
+      <div class="catsection-h">
+        <div class="catsection-icon">${meta.icon}</div>
+        <div><div class="catsection-title">${meta.label}<span class="catsection-count">${items.length}</span></div>
+        <div class="catsection-desc">${meta.desc}</div></div>
+      </div>
+      <div class="catgrid">${items.map(toolCard).join('')}</div>
+    </div>`;
+  }).join('');
+  if(!any) body.innerHTML=`<div class="empty" style="padding:60px 0">검색/필터 조건에 맞는 tool이 없습니다.</div>`;
+  g('cs-total').textContent=_tools.length;
+  g('cs-approved').textContent=_tools.filter(t=>ucApproved(t.uc)).length;
+}
+function toggleInstall(id){
+  const panel=g('inst-'+id);
+  if(panel.classList.contains('on')){ panel.classList.remove('on'); panel.innerHTML=''; return; }
+  const t=_tools.find(x=>x.id===id); if(!t) return;
+  const exposed=`${t.uc}__${t.name}`;
+  const origin=(location.origin&&location.origin!=='null')?location.origin.replace(/\/$/,''):'https://your-mcp-host';
+  const cfgSnippet=JSON.stringify({mcpServers:{[exposed]:{url:`${origin}/mcp`,transport:'http',tool:exposed}}},null,2);
+  const sample={}; schemaToReqRows(t.input_schema).forEach(f=>{ sample[f[0]]=f[4]!==''?coerce(f[1],f[4]):''; });
+  const curl=`curl -s ${origin}/mcp/tools/call \\\n  -H 'Content-Type: application/json' \\\n  -d '${JSON.stringify({name:exposed,arguments:sample})}'`;
+  panel.innerHTML=`
+    <div class="installhdr">🔌 에이전트에 연동하기</div>
+    <div class="installstep"><b>1. MCP 서버 설정에 등록</b>
+      <div class="codeblock"><pre>${esc(cfgSnippet)}</pre><button class="copybtn" onclick="copyText(this)">복사</button></div>
+    </div>
+    <div class="installstep"><b>2. Tool 호출 예시 (curl)</b>
+      <div class="codeblock"><pre>${esc(curl)}</pre><button class="copybtn" onclick="copyText(this)">복사</button></div>
+    </div>
+    <div class="installnote">노출명 <span class="uc">${esc(exposed)}</span> · 승인 전 tool은 검토 용도로만 사용하고, 운영 연동 전 관리자 승인 상태를 확인하세요.</div>
+  `;
+  panel.classList.add('on');
+}
+function copyText(btn){
+  const pre=btn.previousElementSibling;
+  navigator.clipboard.writeText(pre.textContent).then(()=>{
+    const orig=btn.textContent; btn.textContent='복사됨 ✓';
+    setTimeout(()=>{btn.textContent=orig;},1500);
+  }).catch(()=>{ btn.textContent='복사 실패'; setTimeout(()=>{btn.textContent='복사';},1500); });
+}
 
 // ---------- Tool 목록 ----------
 async function loadTools(){ await fetchState(); drawChips(); drawTools(activeUC); }
@@ -898,6 +1048,7 @@ if(location.protocol==='file:'){
 applyPreset();
 updateAdminUI();
 loadCommonOptions();
+loadCatalog().catch(err=>console.error(err));
 
 </script>
 </body>
